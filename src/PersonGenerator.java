@@ -1,65 +1,44 @@
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.*;
 
 public class PersonGenerator {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         boolean doneInput = false;
-
-
         String ID = "";
         String firstName = "";
         String lastName = "";
         String title = "";
-        String rec = "";
         int YOB = 0;
-
-
-        ArrayList <String> people = new ArrayList<>();
+        ArrayList<String> people = new ArrayList<>();
         Scanner in = new Scanner(System.in);
 
         do {
-            ID=SafeInput.getNonZeroLenString(in, "Enter your ID [000001");
-            firstName=SafeInput.getNonZeroLenString(in, "Enter your first name");
-            lastName=SafeInput.getNonZeroLenString(in, "Enter your last name");
-            title=SafeInput.getNonZeroLenString(in, "Enter your title");
-            YOB = SafeInput.getRangedInt(in, "Enter your YOB",  1000, 9999);
+            ID = SafeInput.getNonZeroLenString(in, "Enter your ID [000001]: ");
+            firstName = SafeInput.getNonZeroLenString(in, "Enter your first name: ");
+            lastName = SafeInput.getNonZeroLenString(in, "Enter your last name: ");
+            title = SafeInput.getNonZeroLenString(in, "Enter your title: ");
+            YOB = SafeInput.getRangedInt(in, "Enter your YOB", 1000, 9999);
 
-            rec = ID + ", " + firstName + ", " + lastName + ", " + title + ", " + YOB;
-
+            String rec = ID + ", " + firstName + ", " + lastName + ", " + title + ", " + YOB;
             System.out.println(rec);
-
             people.add(rec);
 
+            doneInput = SafeInput.getYNConfirm(in, "Are you done? (Y/N): ");
+        } while (!doneInput);
 
-            doneInput = SafeInput.getYNConfirm(in,"Are you done");
-        }while (!doneInput);
+        Path file = Paths.get("PersonTestData.txt");
 
-        File workingDirectory = new File(System.getProperty("user.dir"));
-        Path file = Paths.get(workingDirectory.getPath());
-
-        try
-        {
-            OutputStream out=
-                    new BufferedOutputStream(Files.newOutputStream(file, CREATE));
-                    BufferedWriter writer =
-                            new BufferedWriter(new OutputStreamWriter(out));
-            for(String person : people)
-            {
-                writer.write(person, 0,person.length());
+        try (BufferedWriter writer = Files.newBufferedWriter(file, CREATE, APPEND)) {
+            for (String person : people) {
+                writer.write(person);
                 writer.newLine();
             }
-
+            System.out.println("Data successfully written to PersonTestData.txt.");
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
     }
 }
