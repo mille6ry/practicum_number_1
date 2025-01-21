@@ -1,7 +1,12 @@
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+import static java.nio.file.StandardOpenOption.CREATE;
 
-public class Main {
+public class PersonGenerator {
     public static void main(String[] args)
     {
         boolean doneInput = false;
@@ -35,8 +40,26 @@ public class Main {
             doneInput = SafeInput.getYNConfirm(in,"Are you done");
         }while (!doneInput);
 
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        Path file = Paths.get(workingDirectory.getPath());
 
+        try
+        {
+            OutputStream out=
+                    new BufferedOutputStream(Files.newOutputStream(file, CREATE));
+                    BufferedWriter writer =
+                            new BufferedWriter(new OutputStreamWriter(out));
+            for(String person : people)
+            {
+                writer.write(person, 0,person.length());
+                writer.newLine();
+            }
 
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 }
