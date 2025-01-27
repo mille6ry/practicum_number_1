@@ -4,19 +4,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-
-
-/**
- * Reading a delimited text file with Java NIO
- *
- * @author wulft
- */
 public class PersonReader
 {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args)
     {
 
@@ -25,16 +15,6 @@ public class PersonReader
         String rec = "";
         ArrayList<String> lines = new ArrayList<>();
 
-        /*
-
-        Here is the data file we are reading:
-        000001, Bilbo, Baggins, Esq., 1060
-        000002, Frodo, Baggins, Esq., 1120
-        000003, Samwise, Gamgee, Esq., 1125
-        000004, Peregrin, Took, Esq., 1126
-        000005, Meridoc, Brandybuck, Esq., 1126
-
-        */
 
         final int FIELDS_LENGTH = 5;
 
@@ -44,8 +24,6 @@ public class PersonReader
         try
         {
 
-            // use the toolkit to get the current working directory of the IDE
-            // Not sure if the toolkit is thread safe...
             File workingDirectory = new File(System.getProperty("user.dir"));
 
             chooser.setCurrentDirectory(workingDirectory);
@@ -54,28 +32,25 @@ public class PersonReader
             {
                 selectedFile = chooser.getSelectedFile();
                 Path file = selectedFile.toPath();
-                // Typical java pattern of inherited classes
-                // we wrap a BufferedWriter around a lower level BufferedOutputStream
                 try(InputStream in = new BufferedInputStream(Files.newInputStream(file));
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in)))
                 {
-                    // Finally we can read the file LOL!
-                    int line = 0;  // if we want to keep track of the line numbers
+
+                    int line = 0;
                     while (reader.ready()) {
                         rec = reader.readLine();
-                        lines.add(rec);  // read all the lines into memory in an array list
+                        lines.add(rec);
                         line++;
-                        // echo to screen
-                        System.out.printf("\nLine %4d %-60s ", line, rec);
+
+
                     }
                 }
                 System.out.println("\n\nData file read!");
 
-                // Now process the lines in the arrayList
-                // Split the line into the fields by using split with a comma
-                // use trim to remove leading and trailing spaces
-                // Numbers need to be converted back to numberic values. Here only
-                // the last field year of birth yob is an int the rest are strings.
+                System.out.println(String.format("\n%-8s%-25s%-25s%-6s%6d",
+                        "ID", "firstName", "lastName", "title", "yob"));
+                System.out.println("==============================================================");
+
 
                 String[] fields;
                 for(String l:lines)

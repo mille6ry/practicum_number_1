@@ -1,23 +1,61 @@
-import java.util.Scanner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class PersonDemo
-{
+public class PersonDemo {
+    private Person person;
 
-    public static void main(String[] args)
-    {
-        Scanner in = new Scanner(System.in);
-        SafeInputObj sio = new SafeInputObj(in);
+    @BeforeEach
+    public void setUp() {
+        person = new Person("12345", "John", "Doe", "Mr.", 1985);
+    }
 
-        Person boy = new Person("000001", "Bill", "Bailey", "DR.", 1942);
-        Person girl = new Person("000001", "Saly", "Smith", "DR.", 1952);
+    @Test
+    public void testConstructorValid() {
+        assertDoesNotThrow(() -> new Person("67890", "Jane", "Smith", "Dr.", 1975));
+    }
 
-        System.out.println(boy.getFullName());
-        System.out.println(girl.getFormalName());
-        System.out.println(girl.toCSV());
+    @Test
+    public void testConstructorInvalidYOB() {
+        assertThrows(IllegalArgumentException.class, () -> new Person("12345", "John", "Doe", "Mr.", 1930));
+        assertThrows(IllegalArgumentException.class, () -> new Person("12345", "John", "Doe", "Mr.", 2020));
+    }
 
-        String id = sio.getNonZeroLenString("Enter your ID: ");
+    @Test
+    public void testFullName() {
+        assertEquals("John Doe", person.getFullName());
+    }
 
-        System.out.println("Your ID: " + id);
+    @Test
+    public void testFormalName() {
+        assertEquals("Mr. John Doe", person.getFormalName());
+    }
 
+    @Test
+    public void testGetAge() {
+        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+        assertEquals(currentYear - 1985, person.getAge());
+    }
+
+    @Test
+    public void testGetAgeSpecificYear() {
+        assertEquals(20, person.getAge(2005));
+    }
+
+    @Test
+    public void testToCSV() {
+        assertEquals("12345,John,Doe,Mr.,1985", person.toCSV());
+    }
+
+    @Test
+    public void testToJSON() {
+        assertEquals("{\"ID\":\"12345\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"title\":\"Mr.\",\"YOB\":1985}",
+                person.toJSON());
+    }
+
+    @Test
+    public void testToXML() {
+        assertEquals("<Person><ID>12345</ID><FirstName>John</FirstName><LastName>Doe</LastName><Title>Mr.</Title><YOB>1985</YOB></Person>",
+                person.toXML());
     }
 }

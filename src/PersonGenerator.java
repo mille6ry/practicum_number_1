@@ -41,7 +41,7 @@ public class PersonGenerator {
         }while (!doneInput);
 
         File workingDirectory = new File(System.getProperty("user.dir"));
-        Path file = Paths.get(workingDirectory.getPath());
+        Path file = Paths.get(workingDirectory.getPath() + "\\src\\PersonTestData.txt.txt");
 
         try
         {
@@ -54,6 +54,8 @@ public class PersonGenerator {
                 writer.write(person, 0,person.length());
                 writer.newLine();
             }
+            writer.close();
+            System.out.println("Done file Written");
 
         }
         catch (IOException e)
